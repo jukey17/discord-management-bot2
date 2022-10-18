@@ -45,7 +45,7 @@ class LoggingModel(Generic[T]):
 
     def delete_json_if_needed(self, date: datetime.date) -> list[Path]:
         remove_list = []
-        for json_path in self._dir_path.glob(".json"):
+        for json_path in self._dir_path.glob("**/*.json"):
             filename = path.basename(json_path)
             json_date = datetime.datetime.strptime(filename, "%Y-%m-%d.json").date()
             if date - json_date < self._lifetime:
