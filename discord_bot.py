@@ -1,4 +1,5 @@
 import logging
+import traceback
 
 import discord
 from discord.ext import commands
@@ -26,8 +27,17 @@ class DiscordBot(commands.Bot):
         for guild in self.guilds:
             guild_obj = discord.Object(guild.id)
             self.tree.copy_global_to(guild=guild_obj)
-            await self.tree.sync(guild=guild_obj)
+            app_commands = await self.tree.sync(guild=guild_obj)
+            self._logger.debug(f"sync guild={guild}, app_commands={app_commands}")
         guilds = ",".join(
             [f"(name={guild.name},id={guild.id})" for guild in self.guilds]
         )
-        self._logger.debug(f"DiscordBot.on_ready: bot={self.user}, guilds=[{guilds}]")
+        self._logger.debug(f"bot={self.user}, guilds=[{guilds}]")
+
+    async def on_command_error(self, context, exception):
+        orig_error = getattr(exception, "original", exception)
+        error_msg = "".join(
+            traceback.TracebackException.from_exception(orig_error).format()
+        )
+        self._logger.error(error_msg)
+
