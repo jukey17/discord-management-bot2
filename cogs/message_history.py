@@ -112,7 +112,7 @@ class MessageHistoryCog(commands.Cog):
         if after is None:
             after_jst = interaction.guild.created_at.astimezone(utils.Constant.JST)
         else:
-            after_jst = utils.Constant.JST.localize(datetime.datetime.strptime(after, *fmts))
+            after_jst = utils.Constant.JST.localize(utils.try_strptime(after, *fmts))
         after_utc = after_jst.astimezone(utils.Constant.UTC)
 
         result_map = {}
