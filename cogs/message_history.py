@@ -124,7 +124,7 @@ class MessageHistoryCog(commands.Cog):
         results = self._convert_to_message_count_result(result_map)
         sorted_results = sorted(results, key=lambda r: r.get_count(channel), reverse=True)
 
-        filename = f"message_history_count_{after_jst}_{before_jst}.csv".replace("-", "").replace("/", "")
+        filename = f"message_history_count_{after_jst.date()}_{before_jst.date()}.csv".replace("-", "").replace("/", "")
         logger.debug(f"create {filename} buffer")
         with contextlib.closing(io.StringIO()) as buffer:
             fieldnames = ["user"]
@@ -140,7 +140,7 @@ class MessageHistoryCog(commands.Cog):
             logger.debug(f"send {filename}")
 
             title = "/message_history count"
-            description = f"集計期間: {after_jst} ~ {before_jst}"
+            description = f"集計期間: {after_jst.date()} ~ {before_jst.date()}"
             embed = discord.Embed(title=title, description=description)
             channels_str = ", ".join([c.mention for c in channels])
             embed.add_field(name="対象チャンネル", value=channels_str)
