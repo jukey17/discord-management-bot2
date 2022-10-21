@@ -101,16 +101,17 @@ class MessageHistoryCog(commands.Cog):
         if channel4 is not None:
             channels.append(channel4)
 
+        fmts = ["%Y/%m/%d", "%Y-%m-%d"]
         if before is None:
             before_jst = datetime.datetime.now(utils.Constant.JST)
         else:
-            before_jst = utils.Constant.JST.localize(datetime.datetime.strptime(before, "%Y/%m/%d"))
+            before_jst = utils.Constant.JST.localize(utils.try_strptime(before, *fmts))
         before_utc = before_jst.astimezone(utils.Constant.UTC)
 
         if after is None:
             after_jst = interaction.guild.created_at.astimezone(utils.Constant.JST)
         else:
-            after_jst = utils.Constant.JST.localize(datetime.datetime.strptime(after, "%Y/%m/%d"))
+            after_jst = utils.Constant.JST.localize(datetime.datetime.strptime(after, *fmts))
         after_utc = after_jst.astimezone(utils.Constant.UTC)
 
         result_map = {}
