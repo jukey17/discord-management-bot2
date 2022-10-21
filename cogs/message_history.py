@@ -3,6 +3,7 @@ import csv
 import datetime
 import io
 import logging
+import traceback
 from typing import Dict, List
 
 import discord
@@ -148,6 +149,15 @@ class MessageHistoryCog(commands.Cog):
             await interaction.followup.send(
                 embed=embed, file=discord.File(buffer, filename)
             )
+
+    async def cog_app_command_error(
+        self, interaction: discord.Interaction, error: app_commands.AppCommandError
+    ):
+        orig_error = getattr(error, "original", error)
+        error_msg = "".join(
+            traceback.TracebackException.from_exception(orig_error).format()
+        )
+        logger.error(error_msg)
 
     @staticmethod
     async def _count_messages(
