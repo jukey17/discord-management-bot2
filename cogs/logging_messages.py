@@ -24,7 +24,9 @@ class _Constant(utils.Constant):
         utils.Constant.JST.localize(
             datetime.datetime.strptime(
                 os.environ["MANAGE_LOGS_INTERVAL"], "%H:%M"
-            ).replace(year=2000)  # pytzの仕様で1887年移行を指定しないと+09:19になってしまうための対策
+            ).replace(
+                year=2000
+            )  # pytzの仕様で1887年移行を指定しないと+09:19になってしまうための対策
         )
         .astimezone(tz=utils.Constant.UTC)
         .time()
@@ -55,12 +57,10 @@ class LoggingMessages(commands.Cog):
 
     @tasks.loop(time=_Constant.MANAGE_LOGS_LIFETIME_INTERVAL)
     async def manage_logs_lifetime(self):
-        logger.debug("begin")
         now_jst = datetime.datetime.now(_Constant.JST)
         remove_list = self._model.delete_json_if_needed(now_jst.date())
         for remove_path in remove_list:
             logger.debug(f"remove {remove_path}")
-        logger.debug("end")
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
@@ -69,7 +69,6 @@ class LoggingMessages(commands.Cog):
                 f"bot is not logging. message={message.id}, author={message.author.id}"
             )
             return
-        logger.debug("begin")
 
         now_jst = datetime.datetime.now(pytz.timezone("Asia/Tokyo"))
         record = _MessageLogRecord(
@@ -83,8 +82,6 @@ class LoggingMessages(commands.Cog):
             record, now_jst, str(record.guild_id), str(record.channel_id)
         )
         logger.debug(f"file={file_path}, record={record}")
-
-        logger.debug("end")
 
 
 async def setup(bot: commands.Bot):

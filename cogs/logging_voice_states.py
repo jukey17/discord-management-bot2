@@ -100,12 +100,10 @@ class LoggingVoiceStatesCog(commands.Cog):
 
     @tasks.loop(time=_Constant.MANAGE_LOGS_LIFETIME_INTERVAL)
     async def manage_logs_lifetime(self):
-        logger.debug("begin")
         now_jst = datetime.datetime.now(_Constant.JST)
         remove_list = self._model.delete_json_if_needed(now_jst.date())
         for remove_path in remove_list:
             logger.debug(f"remove {remove_path}")
-        logger.debug("end")
 
     @commands.Cog.listener()
     async def on_voice_state_update(
@@ -114,7 +112,6 @@ class LoggingVoiceStatesCog(commands.Cog):
         before: discord.VoiceState,
         after: discord.VoiceState,
     ):
-        logger.debug("begin")
         now_jst = datetime.datetime.now(_Constant.JST)
         record = _VoiceStateLogRecord(
             datetime=now_jst,
@@ -134,7 +131,6 @@ class LoggingVoiceStatesCog(commands.Cog):
         )
         logger.debug(f"file={file_path}, record={record}")
 
-        logger.debug("end")
 
 
 def _get_channel_id(before: VoiceStateChannel, after: VoiceStateChannel) -> int:
