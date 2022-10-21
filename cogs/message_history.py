@@ -158,6 +158,7 @@ class MessageHistoryCog(commands.Cog):
             traceback.TracebackException.from_exception(orig_error).format()
         )
         logger.error(error_msg)
+        await interaction.followup.send("コマンド実行中にエラーが発生しました。")
 
     @staticmethod
     async def _count_messages(
