@@ -1,8 +1,10 @@
 import json
+import os
 from logging import config
 
 
 def load(path: str = "log_config.json"):
+    os.makedirs("logs", exist_ok=True)
     with open(path, "r", encoding="utf-8") as file:
         log_config = json.load(file)
 
